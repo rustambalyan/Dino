@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Pixel-Font';
+    src: url('libs/fonts/EarlyGameBoy.ttf');
+}
+body{
+    margin: 0;
+    padding: 15px;
+    font-family: 'Pixel-Font', sans-serif;
+}
