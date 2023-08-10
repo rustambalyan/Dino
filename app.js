@@ -3,7 +3,6 @@ document.body.appendChild(app.view);
 const canvasWidth = app.screen.width;
 const canvasHeight = app.screen.height;
 
-
 function Cactus() {
     let bigCactusTexture = PIXI.Texture.from('libs/cactus0.png');
     let smallCactusTexture = PIXI.Texture.from('libs/cactus1.png');
