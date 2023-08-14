@@ -2,6 +2,8 @@ document.body.appendChild(app.view);
 
 const canvasWidth = app.screen.width;
 const canvasHeight = app.screen.height;
+let speed = 5
+
 
 function Cactus() {
     let bigCactusTexture = PIXI.Texture.from('libs/cactus0.png');
@@ -16,12 +18,12 @@ function Cactus() {
     for (let i = 0; i < cacts.length; i++) {
         cactus = PIXI.Sprite.from(cacts[i * rnd(2)]);
         if (i * rnd(2) === 0) {
-            cactus.width = 40;
-            cactus.height = 40;
-            cactus.position.set(640, canvasHeight / 2 - cactus.height);
-        } else {
             cactus.width = 50;
             cactus.height = 50;
+            cactus.position.set(640, canvasHeight / 2 - cactus.height);
+        } else {
+            cactus.width = 43;
+            cactus.height = 43;
             cactus.position.set(640, canvasHeight / 2 - cactus.height);
         }
 
@@ -32,38 +34,54 @@ function Cactus() {
 
 let score = [0, 0, 0, 0, 0];
 
-let num = 1;
-scoreTicker = new PIXI.Ticker;
-scoreTicker.start();
 let scoreText = new PIXI.Text();
 scoreText.style.fontFamily = 'Pixel-Font';
+
 scoreText.style.fontSize = 16;
-scoreText.style.fill = 0x606060
+scoreText.style.fill = 0x606060;
 scoreText.x = 420;
 scoreText.y = 10;
+scoreTicker = new PIXI.Ticker;
+setTimeout(() => scoreTicker.start(), 200);
+
+let num = 0;
+let speed2 = 1;
 
 scoreTicker.add((delta) => {
-    num += Math.round(delta);
-    if (num === 10) {
-        num = 0
+    speed2++
+    if (num + speed2 === 10) {
+        num = 0;
+        speed2 = 0
+        score[4] += Math.round(delta)
+    }
+    if (num + speed2 === 10) {
+        num = 0;
+        speed2 = 0
         score[4] += Math.round(delta)
     }
     if (score[4] === 10) {
-        score[4] = 0
+        score[4] = 0;
         score[3] += Math.round(delta)
     }
     if (score[3] === 10) {
-        score[3] = 0
+        score[3] = 0;
         score[2] += Math.round(delta)
     }
+    if (score[2] === 10) {
+        score[2] = 0;
+        score[1] += Math.round(delta)
+    }
     if (score[1] === 10) {
-        score[1] = 0
+        score[1] = 0;
         score[0] += Math.round(delta)
     }
     if (isGameOver) {
         if (localStorage.hasOwnProperty('bestScore') && localStorage.getItem('bestScore') < score.join('')) {
             localStorage.setItem('bestScore', `${score.join('')}`);
         }
+    }
+    if (!localStorage.hasOwnProperty('bestScore')) {
+        localStorage.setItem('bestScore', '00000')
     }
 
     scoreText.text = `HI ${localStorage.getItem('bestScore')} ${score.join('')}`;
@@ -151,7 +169,7 @@ roadTicker.add(moveRoad)
 
 
 function moveRoad() {
-    roadContainer.x -= 5; // Скорость движения дороги (уменьшите значение для более медленного движения)
+    roadContainer.x -= speed; // Скорость движения дороги (уменьшите значение для более медленного движения)
     if (roadContainer.x <= -roadWidth * 2) {
         roadContainer.x = 0;
     }
@@ -197,13 +215,9 @@ function checkCollision(dino, cactus) {
     return false;
 }
 
-let speed = 5
 
 function cactusTick() {
     timeout();
-    let scoreFromArray = Number(score.join(''));
-    console.log(scoreFromArray)
-
     let cactus = new Cactus();
     app.stage.addChild(cactus);
     app.stage.setChildIndex(cactus, app.stage.children.length - 2);
